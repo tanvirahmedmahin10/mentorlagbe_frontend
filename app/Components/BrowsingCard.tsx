@@ -231,7 +231,7 @@ export default function BrowsingClient({ initialData }: BrowsingClientProps) {
                     </div>
 
                     <Link
-                      href={`/tuitions/${tuition._id}`}
+                      href={`/browse-tuitions/${tuition._id}`}
                       className="inline-flex items-center gap-1.5 rounded-xl bg-blue-600 px-4 py-2 text-xs font-semibold text-white shadow-2xs shadow-blue-600/20 transition-all hover:bg-blue-700 active:scale-[0.98]"
                     >
                       <span>View Details</span>

@@ -13,6 +13,7 @@ import {
   BookOpen,
 } from "lucide-react";
 import { TuitionPostPayload } from "@/lib/postApiBackend/postData";
+import EditButtons from "./ButtonForTutors/EditButtons";
 
 export type TutorTuitionItem = TuitionPostPayload & {
   status?: "Pending" | "Approved" | "Rejected";
@@ -32,9 +33,7 @@ export default function MyTuitionsClient({
     // TODO: Implement toggle Active/Closed API call
   };
 
-  const handleEditTuition = (tuition: TutorTuitionItem) => {
-    // TODO: Implement edit modal or navigation
-  };
+
 
   const handleDeleteTuition = async (tuitionId: string) => {
     // TODO: Implement delete API call
@@ -165,14 +164,14 @@ export default function MyTuitionsClient({
                             <Power className="h-3.5 w-3.5" />
                           </button>
 
-                          <button
-                            type="button"
-                            title="Edit Tuition"
-                            onClick={() => handleEditTuition(tuition)}
-                            className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 transition-colors hover:border-slate-300 hover:bg-slate-50 hover:text-slate-900 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-white"
-                          >
-                            <Pencil className="h-3.5 w-3.5" />
-                          </button>
+                         <EditButtons
+                          tuition={tuition}
+                          onUpdated={(updated) =>
+                          setTuitions((prev) =>
+                        prev.map((item) => (item._id === updated._id ? updated : item))
+    )
+  }
+/>
 
                           <button
                             type="button"
