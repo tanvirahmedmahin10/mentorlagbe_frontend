@@ -14,7 +14,8 @@ export interface TuitionPostPayload {
   bannerImage: string;
   description: string;
   teacher_name: string,
-  teacher_email: string
+  teacher_email: string,
+  teacher_id:string
 }
 export interface TuitionPostPayloadUpdate {
   title: string;

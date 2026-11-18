@@ -25,7 +25,6 @@ export default function PostTuitionPage() {
   const [bannerUrl, setBannerUrl] = useState<string>("");
   const [uploadingImg, setUploadingImg] = useState(false);
   const [loading, setLoading] = useState(false);
-
   const handleBannerUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0] ?? null;
     setBannerFile(selectedFile);
@@ -84,9 +83,10 @@ export default function PostTuitionPage() {
       bannerImage: bannerUrl,
       description: String(formData.get("description") ?? "").trim(),
       teacher_name:user?.name,
-      teacher_email:user?.email
+      teacher_email:user?.email,
+      teacher_id:user?.id
     };
-
+ console.log(tuitionData);
     try {
       const res = await FetchPostData(tuitionData, "tuitions");
       if (!res.ok) {
@@ -96,10 +96,12 @@ export default function PostTuitionPage() {
       }
 
       toast.success("Tuition batch submitted for Admin review!");
+      
       form.reset();
       setBannerFile(null);
       setBannerUrl("");
       router.push("/dashboard/tutor/my-tuitions");
+      
     } catch {
       toast.error("Something went wrong. Please try again.");
     } finally {
