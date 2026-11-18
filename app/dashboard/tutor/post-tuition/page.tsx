@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { ImagePlus, Loader2, CheckCircle2 } from "lucide-react";
 import toast from "react-hot-toast";
 import { FetchPostData } from "@/lib/postApiBackend/postData";
+import { authClient } from "@/lib/auth-client";
 
 type TeachingMode = "Online" | "Offline" | "Hybrid";
 
@@ -17,6 +18,8 @@ interface ImgBBResponse {
 
 export default function PostTuitionPage() {
   const router = useRouter();
+  const { data: session, isPending } = authClient.useSession();
+    const user = session?.user;
   const [teachingMode, setTeachingMode] = useState<TeachingMode>("Online");
   const [bannerFile, setBannerFile] = useState<File | null>(null);
   const [bannerUrl, setBannerUrl] = useState<string>("");
@@ -80,6 +83,8 @@ export default function PostTuitionPage() {
       location: String(formData.get("location") ?? "").trim(),
       bannerImage: bannerUrl,
       description: String(formData.get("description") ?? "").trim(),
+      teacher_name:user?.name,
+      teacher_email:user?.email
     };
 
     try {
@@ -167,12 +172,12 @@ export default function PostTuitionPage() {
               <select
                 id="classLevel"
                 name="classLevel"
-                defaultValue="HSC / Class 11–12"
+                defaultValue="HSC / Class 11-12"
                 className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-900 transition-colors focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/15 dark:border-slate-700 dark:bg-slate-800/60 dark:text-white dark:focus:border-blue-500"
               >
-                <option value="Class 6–8">Class 6–8</option>
-                <option value="SSC / Class 9–10">SSC / Class 9–10</option>
-                <option value="HSC / Class 11–12">HSC / Class 11–12</option>
+                <option value="Class 6-8">Class 6-8</option>
+                <option value="SSC / Class 9-10">SSC / Class 9-10</option>
+                <option value="HSC / Class 11-12">HSC / Class 11-12</option>
                 <option value="University Admission">University Admission</option>
                 <option value="Undergraduate">Undergraduate</option>
                 <option value="Skill Development">Skill Development</option>
