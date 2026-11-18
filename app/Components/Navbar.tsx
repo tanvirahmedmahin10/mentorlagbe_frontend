@@ -70,14 +70,14 @@ export default function Navbar() {
           </button>
 
           <a
-            href="#signin"
+            href="signin"
             className="text-[15px] font-medium text-slate-700 transition-colors hover:text-blue-600 dark:text-slate-200 dark:hover:text-blue-400"
           >
             Sign In
           </a>
 
           <a
-            href="#signup"
+            href="signup"
             className="rounded-xl bg-blue-600 px-5 py-2.5 text-[15px] font-semibold text-white shadow-sm shadow-blue-600/20 transition-all hover:bg-blue-700 active:scale-95"
           >
             Sign Up
@@ -129,13 +129,13 @@ export default function Navbar() {
 
           <div className="mt-4 flex flex-col gap-3 border-t border-slate-100 pt-4 dark:border-slate-800">
             <a
-              href="#signin"
+              href="signin"
               className="w-full rounded-xl border border-slate-200 py-2.5 text-center text-sm font-semibold text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-900"
             >
               Sign In
             </a>
             <a
-              href="#signup"
+              href="signup"
               className="w-full rounded-xl bg-blue-600 py-2.5 text-center text-sm font-semibold text-white hover:bg-blue-700"
             >
               Sign Up
