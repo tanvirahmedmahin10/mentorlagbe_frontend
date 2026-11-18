@@ -53,7 +53,7 @@ export default function Navbar() {
               >
                 {link.name}
                 {isActive && (
-                  <span className="absolute inset-x-0 bottom-0 h-[2px] rounded-full bg-blue-600 dark:bg-blue-400" />
+                  <span className="absolute inset-x-0 bottom-0 h-0.5 rounded-full bg-blue-600 dark:bg-blue-400" />
                 )}
               </a>
             );
