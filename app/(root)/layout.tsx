@@ -7,10 +7,10 @@ export default function HomeLayout({
 }>) {
   return (
   
-      <body>
+      <>
         <Navbar></Navbar>
         {children}
-      </body>
+      </>
     
   )
 }

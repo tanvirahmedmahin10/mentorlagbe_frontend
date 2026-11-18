@@ -9,14 +9,10 @@ import { Avatar } from "@base-ui/react/avatar";
 import { authClient } from "@/lib/auth-client";
 import toast from "react-hot-toast";
 
-const navLinks = [
-  { name: "Home", href: "/" },
-  { name: "Browse Tuitions", href: "/browse-tuitions" },
-  { name: "Pricing", href: "/pricing" },
-  { name: "How It Works", href: "/how-it-works" },
-];
 
 export default function Navbar() {
+  
+
   const pathname = usePathname();
   const router = useRouter();
 
@@ -26,7 +22,15 @@ export default function Navbar() {
 
   const { data: session, isPending } = authClient.useSession();
   const user = session?.user;
-
+ const navLinks = [
+  { name: "Home", href: "/" },
+  { name: "Browse Tuitions", href: "/browse-tuitions" },
+  { name: "Pricing", href: "/pricing" },
+  { name: "How It Works", href: "/how-it-works" },
+  ...(user?.role
+    ? [{ name: "Dashboard", href: `/dashboard/${user.role}` }]
+    : []),
+];
   const isActive = (href: string) => {
     if (href === "/") return pathname === "/";
     return pathname.startsWith(href);
