@@ -15,13 +15,11 @@ export default function DashboardLayout({
 }>) {
   return (
     <SidebarProvider className="flex min-h-screen flex-col">
-      {/* Persistent Top MentorLagbe Navbar (Mobile & Desktop) */}
       <header className="sticky top-0 z-50 flex h-16 w-full shrink-0 items-center justify-between border-b border-slate-200/80 bg-white px-4 sm:px-6 dark:border-slate-800 dark:bg-slate-950">
         <div className="flex items-center gap-3">
-          {/* Mobile Hamburger Trigger */}
           <SidebarTrigger className="md:hidden" />
 
-          {/* Brand Logo */}
+        
           <Link href="/" className="flex items-center gap-2.5">
             <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-blue-600 text-white shadow-sm shadow-blue-600/20">
               <BookOpen className="h-5 w-5 stroke-[2.2]" />

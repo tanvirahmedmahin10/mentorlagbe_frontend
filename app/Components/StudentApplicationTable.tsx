@@ -59,7 +59,7 @@ export default function MyApplicationsTable({
           You haven&apos;t applied to any tuition batches yet.
         </p>
         <Link
-          href="/tuitions"
+          href="/browse-tuitions"
           className="mt-4 inline-flex items-center justify-center rounded-xl bg-blue-600 px-4 py-2 text-xs font-semibold text-white hover:bg-blue-700"
         >
           Browse Tuitions

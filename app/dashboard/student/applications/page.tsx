@@ -17,7 +17,7 @@ export default async function StudentApplications() {
 
   return (
     <div className="mx-auto max-w-6xl">
-      {/* Header Row */}
+      
       <div className="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-[26px] dark:text-white">
@@ -29,14 +29,13 @@ export default async function StudentApplications() {
         </div>
 
         <Link
-          href="/tuitions"
+          href="/browse-tuitions"
           className="inline-flex shrink-0 items-center justify-center rounded-xl bg-blue-600 px-5 py-2.5 text-xs font-semibold text-white shadow-xs shadow-blue-600/20 transition-colors hover:bg-blue-700"
         >
           Find More Tuitions
         </Link>
       </div>
 
-      {/* Table Card */}
       <MyApplicationsTable initialApplications={data} />
     </div>
   );

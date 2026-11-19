@@ -43,7 +43,6 @@ const roleMenus: Record<UserRole, NavItem[]> = {
   student: [
     { name: "Overview", url: "/dashboard/student", icon: LayoutGrid },
     { name: "My Applications", url: "/dashboard/student/applications", icon: FileText },
-    { name: "Saved Tuitions", url: "/dashboard/student/saved", icon: Bookmark },
     { name: "Update Profile", url: "/dashboard/student/profile", icon: UserCog },
   ],
   tutor: [

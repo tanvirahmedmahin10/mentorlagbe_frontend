@@ -27,6 +27,7 @@ export interface TuitionPostPayloadUpdate {
   description: string;
 }
 export interface TuitionApplicationPayload {
+    _id?: string;
   tuition_id: string;
   tuition_title: string;
   subject: string;
@@ -43,4 +44,24 @@ export interface TuitionApplicationPayload {
   contactNumber: string;
   note: string;
   status: ApplicationStatus;
+}
+export interface TuitionApplicationType {
+  _id: string;
+  tuition_id: string;
+  tuition_title: string;
+  subject: string;
+  classLevel: string;
+  teachingMode: "Online" | "Offline" | "Hybrid";
+  monthlyFee: number;
+  teacher_id?: string;
+  teacher_name: string;
+  teacher_email: string;
+  student_id: string;
+  student_name: string;
+  student_email: string;
+  preferredSchedule: string;
+  contactNumber: string;
+  note?: string;
+  status: "pending" | "accepted" | "rejected";
+  createdAt?: string;
 }

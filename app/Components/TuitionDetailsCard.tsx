@@ -1,16 +1,18 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { Loader2, Send } from "lucide-react";
+import { CheckCircle2, Loader2, Send } from "lucide-react";
 import toast from "react-hot-toast";
 import { authClient } from "@/lib/auth-client";
-import { FetchPostApplyData} from "@/lib/postApiBackend/postData";
-import { TuitionPostPayload } from "@/lib/types/type";
+import { FetchPostApplyData } from "@/lib/postApiBackend/postData";
+import { TuitionApplicationPayload, TuitionPostPayload } from "@/lib/types/type";
 
 interface ApplyTuitionCardProps {
   tuition: TuitionPostPayload;
 }
+
+const baseBackendUrl = process.env.NEXT_PUBLIC_BETTER_AUTH_BACKEND_URL;
 
 export default function ApplyTuitionCard({ tuition }: ApplyTuitionCardProps) {
   const { data: session, isPending } = authClient.useSession();
@@ -23,8 +25,39 @@ export default function ApplyTuitionCard({ tuition }: ApplyTuitionCardProps) {
   const [note, setNote] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
+  const [existingApplication, setExistingApplication] =
+    useState<TuitionApplicationPayload | null>(null);
+  const [checkingStatus, setCheckingStatus] = useState(false);
+
   const userRole = user?.role?.toLowerCase();
   const isStudent = userRole === "student";
+
+  useEffect(() => {
+    if (!isStudent || !user?.id || !tuition?._id) return;
+
+    const checkExistingApplication = async () => {
+      setCheckingStatus(true);
+      try {
+        const res = await fetch(
+          `${baseBackendUrl}/applications?student_id=${encodeURIComponent(
+            user.id
+          )}&tuition_id=${encodeURIComponent(tuition._id)}`
+        );
+        if (!res.ok) return;
+
+        const data: TuitionApplicationPayload[] = await res.json();
+        if (Array.isArray(data) && data.length > 0) {
+          setExistingApplication(data[0]);
+        }
+      } catch {
+        toast.error('something went wrong')
+      } finally {
+        setCheckingStatus(false);
+      }
+    };
+
+    checkExistingApplication();
+  }, [isStudent, user?.id, tuition?._id]);
 
   const handleApplySubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -57,8 +90,14 @@ export default function ApplyTuitionCard({ tuition }: ApplyTuitionCardProps) {
         toast.error(errData?.message || "Failed to submit application");
         return;
       }
-      
+
+      const result = await res.json().catch(() => null);
       toast.success("Application submitted successfully!");
+
+      setExistingApplication({
+        ...applicationData,
+        _id: result?.insertedId ?? "",
+      });
       setPreferredSchedule("");
       setContactNumber("");
       setNote("");
@@ -79,7 +118,7 @@ export default function ApplyTuitionCard({ tuition }: ApplyTuitionCardProps) {
         {tuition.teacher_name || "the tutor"}.
       </p>
 
-      {isPending ? (
+      {isPending || checkingStatus ? (
         <div className="mt-5 flex items-center justify-center py-6">
           <Loader2 className="h-5 w-5 animate-spin text-blue-600" />
         </div>
@@ -114,6 +153,28 @@ export default function ApplyTuitionCard({ tuition }: ApplyTuitionCardProps) {
           >
             Apply Now (Students Only)
           </button>
+        </div>
+      ) : existingApplication ? (
+        <div className="mt-5 space-y-4">
+          <div className="rounded-xl border border-emerald-200/90 bg-emerald-50/70 p-4 dark:border-emerald-900/50 dark:bg-emerald-950/30">
+            <div className="flex items-center gap-2 text-sm font-semibold text-emerald-700 dark:text-emerald-400">
+              <CheckCircle2 className="h-4 w-4 shrink-0" />
+              <span>Application Submitted</span>
+            </div>
+            <p className="mt-1.5 text-xs text-emerald-700/90 dark:text-emerald-300/90">
+              Current status:{" "}
+              <span className="font-semibold capitalize">
+                {existingApplication.status || "Pending"}
+              </span>
+            </p>
+          </div>
+
+          <Link
+            href="/dashboard/student/applications"
+            className="flex w-full items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-semibold text-slate-800 transition-colors hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700/70"
+          >
+            Manage in My Applications
+          </Link>
         </div>
       ) : (
         <form onSubmit={handleApplySubmit} className="mt-5 space-y-3.5">
