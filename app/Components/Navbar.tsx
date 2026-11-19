@@ -26,7 +26,7 @@ export default function Navbar() {
   { name: "Home", href: "/" },
   { name: "Browse Tuitions", href: "/browse-tuitions" },
   { name: "Pricing", href: "/pricing" },
-  { name: "How It Works", href: "/how-it-works" },
+  { name: "How It Works", href: "/#how-it-works" },
   ...(user?.role
     ? [{ name: "Dashboard", href: `/dashboard/${user.role}` }]
     : []),
