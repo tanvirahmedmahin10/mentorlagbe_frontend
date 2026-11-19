@@ -84,7 +84,7 @@ export default function PostTuitionPage() {
       description: String(formData.get("description") ?? "").trim(),
       teacher_name:user?.name,
       teacher_email:user?.email,
-      teacher_id:user?.id
+      teacher_id:user?.id,
     };
  console.log(tuitionData);
     try {

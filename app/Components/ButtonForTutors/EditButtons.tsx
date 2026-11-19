@@ -7,9 +7,8 @@ import toast from "react-hot-toast";
 import { TutorTuitionItem } from "../TuitionsTable";
 import {
   baseBackendUrl,
-  TeachingMode,
-  TuitionPostPayloadUpdate,
 } from "@/lib/postApiBackend/postData";
+import { TeachingMode, TuitionPostPayloadUpdate } from "@/lib/types/type";
 
 interface EditButtonsProps {
   tuition: TutorTuitionItem;

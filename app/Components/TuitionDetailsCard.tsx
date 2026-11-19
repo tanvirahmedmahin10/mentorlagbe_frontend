@@ -46,9 +46,10 @@ export default function ApplyTuitionCard({ tuition }: ApplyTuitionCardProps) {
         if (!res.ok) return;
 
         const data: TuitionApplicationPayload[] = await res.json();
-        if (Array.isArray(data) && data.length > 0) {
-          setExistingApplication(data[0]);
-        }
+        const existing = Array.isArray(data)
+          ? data.find((app) => app.tuition_id === tuition._id)
+          : undefined;
+        setExistingApplication(existing ?? null);
       } catch {
         toast.error('something went wrong')
       } finally {

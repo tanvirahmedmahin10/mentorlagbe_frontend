@@ -155,7 +155,7 @@ export default function MyApplicationsTable({
                       </button>
                     ) : (
                       <Link
-                        href={`/tuitions/${app.tuition_id}`}
+                        href={`/browse-tuitions/${app.tuition_id}`}
                         className="text-xs font-semibold text-blue-600 transition-colors hover:text-blue-700 dark:text-blue-400"
                       >
                         View / Review

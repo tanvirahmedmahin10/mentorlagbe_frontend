@@ -1,5 +1,7 @@
 export type TeachingMode = "Online" | "Offline" | "Hybrid";
 export type ApplicationStatus = "pending" | "accepted" | "rejected";
+
+
 export interface TuitionPostPayload {
   _id:string,
   title: string;
@@ -13,7 +15,8 @@ export interface TuitionPostPayload {
   description: string;
   teacher_name: string,
   teacher_email: string,
-  teacher_id:string
+  teacher_id:string,
+  status:string
 }
 export interface TuitionPostPayloadUpdate {
   title: string;

@@ -1,7 +1,7 @@
 import React from "react";
 import { FetchGetData } from "@/lib/getApiBackend/getData";
-import { TuitionPostPayload } from "@/lib/postApiBackend/postData";
 import BrowsingClient from "@/app/Components/BrowsingCard";
+import { TuitionPostPayload } from "@/lib/types/type";
 
 
 interface BrowsingPageProps {
@@ -16,8 +16,11 @@ const BrowsingPage = async ({ searchParams }: BrowsingPageProps) => {
   const query = urlSearch.toString();
 
   const endpoint = query ? `tuitions?${query}` : "tuitions";
-  const data: TuitionPostPayload[] = (await FetchGetData(endpoint)) ?? [];
-
+  const initialData: TuitionPostPayload[] = (await FetchGetData(endpoint)) ?? [];
+  const data: TuitionPostPayload[] = initialData.filter(
+  (post) => post.status === "approved"
+);
+   console.log(data);
   return <BrowsingClient initialData={data} />;
 };
 

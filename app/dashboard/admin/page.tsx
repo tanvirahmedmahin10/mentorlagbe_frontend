@@ -1,6 +1,9 @@
+import { auth } from '@/lib/auth';
+
 import React from 'react';
 
-const AdminPage = () => {
+const AdminPage = async() => {
+   
     return (
         <div>
             admin pls
