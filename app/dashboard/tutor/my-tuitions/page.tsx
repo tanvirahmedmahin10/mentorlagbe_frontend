@@ -1,6 +1,6 @@
 import React from "react";
 import {  FetchTeacherData } from "@/lib/getApiBackend/getData";
-import MyTuitionsClient, { TutorTuitionItem } from "@/app/Components/TuitionsCard";
+import MyTuitionsClient, { TutorTuitionItem } from "@/app/Components/TuitionsTable";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 

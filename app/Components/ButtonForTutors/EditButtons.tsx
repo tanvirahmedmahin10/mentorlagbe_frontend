@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Pencil, X, Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
-import { TutorTuitionItem } from "../TuitionsCard";
+import { TutorTuitionItem } from "../TuitionsTable";
 import {
   baseBackendUrl,
   TeachingMode,

@@ -10,7 +10,8 @@ import {
   ArrowRight,
   BookOpen,
 } from "lucide-react";
-import { TuitionPostPayload } from "@/lib/postApiBackend/postData";
+import { TuitionPostPayload } from "@/lib/types/type";
+
 
 type TeachingModeFilter = "All" | "Online" | "Offline" | "Hybrid";
 

@@ -16,3 +16,19 @@ export const FetchTeacherData = async (teacherId?: string, path: string = "tuiti
   if (!res.ok) return [];
   return res.json();
 };
+export const FetchGetDetails=async(id:string)=>{
+
+const res=await fetch(`${baseBackendUrl}/tuitions/${id}`)
+return res.json()
+
+}
+export const FetchStudentData = async (studentId?: string, path: string = "applications") => {
+  if (!studentId) return [];
+
+  const res = await fetch(`${baseBackendUrl}/${path}?student_id=${encodeURIComponent(studentId)}`, {
+    cache: "no-store", 
+  });
+
+  if (!res.ok) return [];
+  return res.json();
+};

@@ -12,8 +12,9 @@ import {
   Trash2,
   BookOpen,
 } from "lucide-react";
-import { TuitionPostPayload } from "@/lib/postApiBackend/postData";
+
 import EditButtons from "./ButtonForTutors/EditButtons";
+import { TuitionPostPayload } from "@/lib/types/type";
 
 export type TutorTuitionItem = TuitionPostPayload & {
   status?: "Pending" | "Approved" | "Rejected";
