@@ -17,7 +17,7 @@ import EditButtons from "./ButtonForTutors/EditButtons";
 import { TuitionPostPayload } from "@/lib/types/type";
 
 export type TutorTuitionItem = TuitionPostPayload & {
-  status?: "Pending" | "Approved" | "Rejected";
+  status?: "pending" | "approved" | "rejected";
   availability?: "Active" | "Closed";
 };
 
@@ -116,21 +116,21 @@ export default function MyTuitionsClient({
 
                      
                       <td className="whitespace-nowrap px-4 py-4">
-                        {reviewStatus === "Approved" && (
+                        {reviewStatus === "approved" && (
                           <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-600 dark:text-emerald-400">
                             <CheckCircle2 className="h-3.5 w-3.5" />
                             <span>Approved</span>
                           </span>
                         )}
 
-                        {reviewStatus === "Pending" && (
+                        {reviewStatus === "pending" && (
                           <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-amber-600 dark:text-amber-400">
                             <Clock className="h-3.5 w-3.5" />
                             <span>Pending</span>
                           </span>
                         )}
 
-                        {reviewStatus === "Rejected" && (
+                        {reviewStatus === "rejected" && (
                           <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-red-600 dark:text-red-400">
                             <XCircle className="h-3.5 w-3.5" />
                             <span>Rejected</span>
