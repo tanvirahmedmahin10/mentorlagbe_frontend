@@ -8,10 +8,10 @@ import {
   CheckCircle2,
   XCircle,
   Power,
-  Pencil,
   Trash2,
   BookOpen,
 } from "lucide-react";
+import toast from "react-hot-toast";
 
 import EditButtons from "./ButtonForTutors/EditButtons";
 import { TuitionPostPayload } from "@/lib/types/type";
@@ -25,24 +25,81 @@ interface MyTuitionsClientProps {
   initialData: TutorTuitionItem[];
 }
 
+const baseBackendUrl = process.env.NEXT_PUBLIC_BETTER_AUTH_BACKEND_URL;
+
 export default function MyTuitionsClient({
   initialData,
 }: MyTuitionsClientProps) {
   const [tuitions, setTuitions] = useState<TutorTuitionItem[]>(initialData);
+  const [busyId, setBusyId] = useState<string | null>(null);
 
   const handleToggleAvailability = async (tuition: TutorTuitionItem) => {
-    // TODO: Implement toggle Active/Closed API call
+    if (!tuition._id) return;
+
+    const currentAvailability = tuition.availability ?? "Active";
+    const nextAvailability =
+      currentAvailability === "Active" ? "Closed" : "Active";
+    const previous = [...tuitions];
+
+    setTuitions((prev) =>
+      prev.map((item) =>
+        item._id === tuition._id
+          ? { ...item, availability: nextAvailability }
+          : item
+      )
+    );
+    setBusyId(tuition._id);
+
+    try {
+      const res = await fetch(`${baseBackendUrl}/tuitions/${tuition._id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ availability: nextAvailability }),
+      });
+
+      if (!res.ok) {
+        setTuitions(previous);
+        toast.error("Failed to update availability");
+        return;
+      }
+
+      toast.success(`Batch marked as ${nextAvailability}`);
+    } catch {
+      setTuitions(previous);
+      toast.error("Something went wrong");
+    } finally {
+      setBusyId(null);
+    }
   };
 
-
-
   const handleDeleteTuition = async (tuitionId: string) => {
-    // TODO: Implement delete API call
+    const previous = [...tuitions];
+
+    setTuitions((prev) => prev.filter((item) => item._id !== tuitionId));
+    setBusyId(tuitionId);
+
+    try {
+      const res = await fetch(`${baseBackendUrl}/tuitions/${tuitionId}`, {
+        method: "DELETE",
+      });
+
+      if (!res.ok) {
+        setTuitions(previous);
+        toast.error("Failed to delete tuition");
+        return;
+      }
+
+      toast.success("Tuition deleted");
+    } catch {
+      setTuitions(previous);
+      toast.error("Something went wrong");
+    } finally {
+      setBusyId(null);
+    }
   };
 
   return (
     <div className="mx-auto max-w-6xl">
-     
       <div className="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-[26px] dark:text-white">
@@ -90,15 +147,18 @@ export default function MyTuitionsClient({
 
               <tbody className="divide-y divide-slate-100 text-sm dark:divide-slate-800">
                 {tuitions.map((tuition) => {
-                  const reviewStatus = tuition.status ?? "Pending";
-                  const isAvailable = (tuition.availability ?? "Active") === "Active";
+                  const reviewStatus = (
+                    tuition.status ?? "pending"
+                  ).toLowerCase();
+                  const isAvailable =
+                    (tuition.availability ?? "Active") === "Active";
+                  const isBusy = busyId === tuition._id;
 
                   return (
                     <tr
                       key={tuition._id}
                       className="transition-colors hover:bg-slate-50/70 dark:hover:bg-slate-800/30"
                     >
-                   
                       <td className="py-4 pl-6 pr-4">
                         <p className="font-semibold text-slate-900 dark:text-white">
                           {tuition.title}
@@ -109,12 +169,10 @@ export default function MyTuitionsClient({
                         </p>
                       </td>
 
-                 
                       <td className="whitespace-nowrap px-4 py-4 text-right font-mono text-xs font-semibold text-slate-800 dark:text-slate-200">
                         BDT {tuition.monthlyFee.toLocaleString()}
                       </td>
 
-                     
                       <td className="whitespace-nowrap px-4 py-4">
                         {reviewStatus === "approved" && (
                           <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-600 dark:text-emerald-400">
@@ -138,7 +196,6 @@ export default function MyTuitionsClient({
                         )}
                       </td>
 
-                 
                       <td className="whitespace-nowrap px-4 py-4">
                         {isAvailable ? (
                           <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400">
@@ -151,36 +208,39 @@ export default function MyTuitionsClient({
                         )}
                       </td>
 
-                 
                       <td className="whitespace-nowrap py-4 pl-4 pr-6 text-right">
                         <div className="inline-flex items-center gap-2">
                           <button
                             type="button"
+                            disabled={isBusy}
                             title={
                               isAvailable ? "Close Batch" : "Activate Batch"
                             }
                             onClick={() => handleToggleAvailability(tuition)}
-                            className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 transition-colors hover:border-slate-300 hover:bg-slate-50 hover:text-slate-900 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-white"
+                            className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 transition-colors hover:border-slate-300 hover:bg-slate-50 hover:text-slate-900 disabled:opacity-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-white"
                           >
                             <Power className="h-3.5 w-3.5" />
                           </button>
 
-                         <EditButtons
-                          tuition={tuition}
-                          onUpdated={(updated) =>
-                          setTuitions((prev) =>
-                        prev.map((item) => (item._id === updated._id ? updated : item))
-    )
-  }
-/>
+                          <EditButtons
+                            tuition={tuition}
+                            onUpdated={(updated) =>
+                              setTuitions((prev) =>
+                                prev.map((item) =>
+                                  item._id === updated._id ? updated : item
+                                )
+                              )
+                            }
+                          />
 
                           <button
                             type="button"
+                            disabled={isBusy}
                             title="Delete Tuition"
                             onClick={() =>
                               tuition._id && handleDeleteTuition(tuition._id)
                             }
-                            className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-red-200 bg-white text-red-500 transition-colors hover:border-red-300 hover:bg-red-50 hover:text-red-600 dark:border-red-900/50 dark:bg-slate-800 dark:text-red-400 dark:hover:bg-red-950/40"
+                            className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-red-200 bg-white text-red-500 transition-colors hover:border-red-300 hover:bg-red-50 hover:text-red-600 disabled:opacity-50 dark:border-red-900/50 dark:bg-slate-800 dark:text-red-400 dark:hover:bg-red-950/40"
                           >
                             <Trash2 className="h-3.5 w-3.5" />
                           </button>
