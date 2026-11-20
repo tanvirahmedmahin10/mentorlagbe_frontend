@@ -68,6 +68,7 @@ export default function ApplyTuitionCard({ tuition }: ApplyTuitionCardProps) {
     if (!isStudent || !user) return;
     const countResult=await FetchStudentDataCount(user.id)
     if(countResult.count>=2){
+      toast.error('Pay to Apply For More')
    router.push('/payments')
    return
 
