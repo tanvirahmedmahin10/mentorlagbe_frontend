@@ -32,3 +32,13 @@ export const FetchStudentData = async (studentId?: string, path: string = "appli
   if (!res.ok) return [];
   return res.json();
 };
+export const FetchStudentDataCount = async (studentId?: string, path: string = "applications") => {
+  if (!studentId) return [];
+
+  const res = await fetch(`${baseBackendUrl}/${path}/count?student_id=${encodeURIComponent(studentId)}`, {
+    cache: "no-store", 
+  });
+
+  if (!res.ok) return [];
+  return res.json();
+};

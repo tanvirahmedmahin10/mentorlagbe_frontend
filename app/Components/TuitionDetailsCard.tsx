@@ -7,6 +7,8 @@ import toast from "react-hot-toast";
 import { authClient } from "@/lib/auth-client";
 import { FetchPostApplyData } from "@/lib/postApiBackend/postData";
 import { TuitionApplicationPayload, TuitionPostPayload } from "@/lib/types/type";
+import { FetchStudentDataCount } from "@/lib/getApiBackend/getData";
+import { useRouter } from "next/navigation";
 
 interface ApplyTuitionCardProps {
   tuition: TuitionPostPayload;
@@ -15,6 +17,7 @@ interface ApplyTuitionCardProps {
 const baseBackendUrl = process.env.NEXT_PUBLIC_BETTER_AUTH_BACKEND_URL;
 
 export default function ApplyTuitionCard({ tuition }: ApplyTuitionCardProps) {
+  const router=useRouter()
   const { data: session, isPending } = authClient.useSession();
   const user = session?.user as
     | { id: string; name?: string; email?: string; role?: string }
@@ -63,8 +66,15 @@ export default function ApplyTuitionCard({ tuition }: ApplyTuitionCardProps) {
   const handleApplySubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!isStudent || !user) return;
+    const countResult=await FetchStudentDataCount(user.id)
+    if(countResult.count>=2){
+   router.push('/payments')
+   return
 
-    const applicationData = {
+    }
+    else{
+
+ const applicationData = {
       tuition_id: tuition._id,
       tuition_title: tuition.title,
       subject: tuition.subject,
@@ -107,6 +117,10 @@ export default function ApplyTuitionCard({ tuition }: ApplyTuitionCardProps) {
     } finally {
       setSubmitting(false);
     }
+
+    }
+
+   
   };
 
   return (
@@ -131,7 +145,7 @@ export default function ApplyTuitionCard({ tuition }: ApplyTuitionCardProps) {
           </div>
 
           <Link
-            href="/sign-in"
+            href="/signin"
             className="flex w-full items-center justify-center rounded-xl bg-blue-600 px-4 py-2.5 text-xs font-semibold text-white shadow-2xs transition-colors hover:bg-blue-700"
           >
             Sign In to Apply
