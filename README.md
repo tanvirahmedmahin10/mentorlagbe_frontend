@@ -4,7 +4,7 @@
 MentorLagbe is a full-stack tuition and academic mentorship platform that connects students with tutors across Bangladesh. Students can browse and apply for tuition batches, tutors can create and manage tuition listings, and admins can manage users, approve tuition posts, and monitor subscription payments.
 
 ## Live URL
-[https://mentorlagbe.vercel.app](https://mentorlagbe.vercel.app)
+[https://mentorlagbefrontend-pied.vercel.app/](https://mentorlagbefrontend-pied.vercel.app/)
 
 ## Admin Credentials
 - **Email:** admin@example.com
