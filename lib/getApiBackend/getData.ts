@@ -16,12 +16,22 @@ export const FetchTeacherData = async (teacherId?: string, path: string = "tuiti
   if (!res.ok) return [];
   return res.json();
 };
-export const FetchGetDetails=async(id:string)=>{
+export const FetchGetDetails = async (id: string) => {
+  try {
+    const res = await fetch(`${baseBackendUrl}/tuitions/${encodeURIComponent(id)}`, {
+      cache: "no-store",
+    });
 
-const res=await fetch(`${baseBackendUrl}/tuitions/${id}`)
-return res.json()
+    if (!res.ok) return null;
 
-}
+    const text = await res.text();
+    if (!text) return null;
+
+    return JSON.parse(text);
+  } catch {
+    return null;
+  }
+};
 export const FetchStudentData = async (studentId?: string, path: string = "applications") => {
   if (!studentId) return [];
 

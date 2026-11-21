@@ -6,6 +6,7 @@ import { FetchGetDetails } from "@/lib/getApiBackend/getData";
 
 import ApplyTuitionCard from "@/app/Components/TuitionDetailsCard";
 import { TuitionPostPayload } from "@/lib/types/type";
+import { notFound } from "next/navigation";
 
 
 export interface IParams {
@@ -19,24 +20,8 @@ const DetailsPage = async ({ params }: IParams) => {
   const res: TuitionPostPayload | null = await FetchGetDetails(browse_id);
 
   if (!res) {
-    return (
-      <div className="flex min-h-[60vh] flex-col items-center justify-center px-4 text-center">
-        <BookOpen className="h-10 w-10 text-slate-400" />
-        <h2 className="mt-3 text-lg font-bold text-slate-900 dark:text-white">
-          Tuition not found
-        </h2>
-        <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-          This listing may have been removed or is no longer available.
-        </p>
-        <Link
-          href="/browse-tuitions"
-          className="mt-4 inline-flex items-center gap-1.5 text-xs font-semibold text-blue-600 hover:underline"
-        >
-          <ArrowLeft className="h-3.5 w-3.5" />
-          <span>Back to Browse Tuitions</span>
-        </Link>
-      </div>
-    );
+    notFound();
+   
   }
 
   return (
