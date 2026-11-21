@@ -98,7 +98,11 @@ export default function SignUpPage() {
     }
 
     toast.success("Account created successfully!");
-    router.push("/");
+    if (role === "tutor") {
+      router.push("/myprofile");
+    } else {
+      router.push("/");
+    }
   };
 
   return (
