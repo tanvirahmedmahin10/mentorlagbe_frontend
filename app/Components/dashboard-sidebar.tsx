@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
@@ -29,6 +29,8 @@ import {
 } from "@/components/ui/sidebar";
 import { authClient } from "@/lib/auth-client";
 import toast from "react-hot-toast";
+
+const baseBackendUrl = process.env.NEXT_PUBLIC_BETTER_AUTH_BACKEND_URL;
 
 type UserRole = "student" | "tutor" | "admin";
 
@@ -74,18 +76,43 @@ export function DashboardSidebar() {
   const router = useRouter();
   const { setOpenMobile } = useSidebar();
   const { data: session } = authClient.useSession();
+  const [isPremium, setIsPremium] = useState(false);
 
-  
   useEffect(() => {
     setOpenMobile(false);
   }, [pathname, setOpenMobile]);
 
-  const user = session?.user;
-  const userRole = (user?.role as UserRole | undefined) ?? "student";
+  const user = session?.user as
+    | { id?: string; name?: string; image?: string; role?: string }
+    | undefined;
+  const userId = user?.id;
+  const userRole = (user?.role?.toLowerCase() as UserRole | undefined) ?? "student";
   const userName = user?.name ?? "MentorLagbe User";
   const userImage = user?.image;
-  const planLabel = userRole === "student" ? "Free Plan" : "Pro Plan";
+
+  useEffect(() => {
+    if (!userId || userRole === "admin") return;
+
+    let ignore = false;
+    fetch(`${baseBackendUrl}/users/${userId}/premium`)
+      .then((res) => (res.ok ? res.json() : { premium: false }))
+      .then((data) => {
+        if (!ignore) setIsPremium(Boolean(data?.premium));
+      })
+      .catch(() => {
+        if (!ignore) setIsPremium(false);
+      });
+
+    return () => {
+      ignore = true;
+    };
+  }, [userId, userRole, pathname]);
+
   const roleLabel = userRole.charAt(0).toUpperCase() + userRole.slice(1);
+  const subtitle =
+    userRole === "admin"
+      ? roleLabel
+      : `${roleLabel} · ${isPremium ? "Pro Plan" : "Free Plan"}`;
 
   const menuItems = roleMenus[userRole] ?? roleMenus.student;
 
@@ -99,9 +126,7 @@ export function DashboardSidebar() {
 
   return (
     <Sidebar className="border-r border-slate-200/80 bg-white md:top-16 md:h-[calc(100svh-4rem)] dark:border-slate-800 dark:bg-slate-950">
-  
       <SidebarHeader className="p-0">
-
         <div className="flex h-16 flex-row items-center gap-3 border-b border-slate-100 px-5 md:hidden dark:border-slate-800">
           <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-blue-600 text-white shadow-sm shadow-blue-600/20">
             <BookOpen className="h-5 w-5 stroke-[2.2]" />
@@ -118,6 +143,7 @@ export function DashboardSidebar() {
               alt={userName}
               width={44}
               height={44}
+              unoptimized
               className="h-11 w-11 shrink-0 rounded-full object-cover ring-2 ring-blue-100 dark:ring-blue-900/40"
             />
           ) : (
@@ -131,7 +157,7 @@ export function DashboardSidebar() {
               {userName}
             </p>
             <p className="truncate text-xs text-slate-500 dark:text-slate-400">
-              {roleLabel} · {planLabel}
+              {subtitle}
             </p>
           </div>
         </div>

@@ -1,10 +1,12 @@
 import React from "react";
 import Link from "next/link";
 import { headers } from "next/headers";
-import { FilePlus2 } from "lucide-react";
+import { FilePlus2, CreditCard, CheckCircle2 } from "lucide-react";
 import { auth } from "@/lib/auth";
 import { FetchTeacherData } from "@/lib/getApiBackend/getData";
 import { TuitionPostPayload, TuitionApplicationType } from "@/lib/types/type";
+
+const baseBackendUrl = process.env.NEXT_PUBLIC_BETTER_AUTH_BACKEND_URL;
 
 export default async function TutorPage() {
   const session = await auth.api.getSession({
@@ -12,31 +14,45 @@ export default async function TutorPage() {
   });
 
   const user = session?.user as
-    | { id: string; name?: string; email?: string; plan?: string }
+    | { id: string; name?: string; email?: string }
     | undefined;
 
-  const [tuitions, applications]: [
-    TuitionPostPayload[],
-    TuitionApplicationType[]
-  ] = await Promise.all([
-    FetchTeacherData(user?.id, "tuitions").then((res) => res ?? []),
-    FetchTeacherData(user?.id, "applications").then((res) => res ?? []),
+  const [tuitions, applications, premiumRes] = await Promise.all([
+    FetchTeacherData(user?.id, "tuitions").then(
+      (res) => (res ?? []) as TuitionPostPayload[]
+    ),
+    FetchTeacherData(user?.id, "applications").then(
+      (res) => (res ?? []) as TuitionApplicationType[]
+    ),
+    user?.id
+      ? fetch(`${baseBackendUrl}/users/${user.id}/premium`, {
+          cache: "no-store",
+        }).catch(() => null)
+      : Promise.resolve(null),
   ]);
- const totalApplicantsData=applications.filter(post=>post.teacher_id===user?.id)
+
+  const premiumData = premiumRes?.ok
+    ? await premiumRes.json()
+    : { premium: false };
+  const isPremium = Boolean(premiumData?.premium);
+
+  const totalApplicantsData = applications.filter(
+    (post) => post.teacher_id === user?.id
+  );
   const totalTuitions = tuitions.length;
   const approvedTuitions = tuitions.filter(
     (item) => item.status?.toLowerCase() === "approved"
   ).length;
   const totalApplicants = totalApplicantsData.length;
-  const pendingApplicants = applications.filter(
+  const pendingApplicants = totalApplicantsData.filter(
     (item) => (item.status || "pending").toLowerCase() === "pending"
   ).length;
 
-  const currentPlan = user?.plan ? `${user.plan} Plan` : "Free Plan";
+  const currentPlan = isPremium ? "Pro Plan" : "Free Plan";
 
   return (
     <div className="mx-auto max-w-6xl">
- 
+      {/* Header Row */}
       <div className="mb-7 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-[26px] dark:text-white">
@@ -47,16 +63,33 @@ export default async function TutorPage() {
           </p>
         </div>
 
-        <Link
-          href="/dashboard/tutor/post-tuition"
-          className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 py-2.5 text-xs font-semibold text-white shadow-xs shadow-blue-600/20 transition-colors hover:bg-blue-700"
-        >
-          <FilePlus2 className="h-4 w-4" />
-          <span>Post a Tuition</span>
-        </Link>
+        <div className="flex flex-wrap items-center gap-3">
+          {isPremium ? (
+            <span className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-2.5 text-xs font-semibold text-emerald-700 dark:border-emerald-800/60 dark:bg-emerald-950/40 dark:text-emerald-400">
+              <CheckCircle2 className="h-4 w-4" />
+              <span>Tutor Pro Active</span>
+            </span>
+          ) : (
+            <Link
+              href="/payments"
+              className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-semibold text-slate-800 transition-colors hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
+            >
+              <CreditCard className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+              <span>Upgrade to Pro ($15)</span>
+            </Link>
+          )}
+
+          <Link
+            href="/dashboard/tutor/post-tuition"
+            className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 py-2.5 text-xs font-semibold text-white shadow-xs shadow-blue-600/20 transition-colors hover:bg-blue-700"
+          >
+            <FilePlus2 className="h-4 w-4" />
+            <span>Post a Tuition</span>
+          </Link>
+        </div>
       </div>
 
-     
+      {/* 4 Stats Cards */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <div className="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-2xs dark:border-slate-800 dark:bg-slate-900">
           <p className="text-xs font-medium text-slate-500 dark:text-slate-400">
@@ -95,6 +128,7 @@ export default async function TutorPage() {
         </div>
       </div>
 
+      {/* Quick Navigation Cards */}
       <div className="mt-5 grid grid-cols-1 gap-4 md:grid-cols-2">
         <Link
           href="/dashboard/tutor/my-tuitions"

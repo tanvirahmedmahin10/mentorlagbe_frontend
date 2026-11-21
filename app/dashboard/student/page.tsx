@@ -12,17 +12,29 @@ import { auth } from "@/lib/auth";
 import { FetchStudentData } from "@/lib/getApiBackend/getData";
 import { TuitionApplicationPayload } from "@/lib/types/type";
 
+const baseBackendUrl = process.env.NEXT_PUBLIC_BETTER_AUTH_BACKEND_URL;
+
 export default async function StudentPage() {
   const session = await auth.api.getSession({
     headers: await headers(),
   });
 
   const user = session?.user as
-    | { id: string; name?: string; email?: string; plan?: string }
+    | { id: string; name?: string; email?: string }
     | undefined;
 
-  const applications: TuitionApplicationPayload[] =
-    (await FetchStudentData(user?.id, "applications")) ?? [];
+  const [applicationsData, premiumRes] = await Promise.all([
+    FetchStudentData(user?.id, "applications"),
+    user?.id
+      ? fetch(`${baseBackendUrl}/users/${user.id}/premium`, {
+          cache: "no-store",
+        }).catch(() => null)
+      : Promise.resolve(null),
+  ]);
+
+  const applications: TuitionApplicationPayload[] = applicationsData ?? [];
+  const premiumData = premiumRes?.ok ? await premiumRes.json() : { premium: false };
+  const isPremium = Boolean(premiumData?.premium);
 
   const totalApplied = applications.length;
   const acceptedCount = applications.filter(
@@ -32,7 +44,7 @@ export default async function StudentPage() {
     (app) => (app.status || "pending").toLowerCase() === "pending"
   ).length;
 
-  const currentPlan = user?.plan ? `${user.plan} Plan` : "Free Plan";
+  const currentPlan = isPremium ? "Pro Plan" : "Free Plan";
   const recentApplications = applications.slice(0, 5);
 
   return (
@@ -48,13 +60,20 @@ export default async function StudentPage() {
           </p>
         </div>
 
-        <Link
-          href="/dashboard/student/upgrade"
-          className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 py-2.5 text-xs font-semibold text-white shadow-xs shadow-blue-600/20 transition-colors hover:bg-blue-700"
-        >
-          <CreditCard className="h-4 w-4" />
-          <span>Upgrade to Student Pro ($10)</span>
-        </Link>
+        {isPremium ? (
+          <span className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl border border-emerald-200 bg-emerald-50 px-5 py-2.5 text-xs font-semibold text-emerald-700 dark:border-emerald-800/60 dark:bg-emerald-950/40 dark:text-emerald-400">
+            <CheckCircle2 className="h-4 w-4" />
+            <span>Student Pro Active</span>
+          </span>
+        ) : (
+          <Link
+            href="/payments"
+            className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 py-2.5 text-xs font-semibold text-white shadow-xs shadow-blue-600/20 transition-colors hover:bg-blue-700"
+          >
+            <CreditCard className="h-4 w-4" />
+            <span>Upgrade to Student Pro ($10)</span>
+          </Link>
+        )}
       </div>
 
       {/* 4 Stats Cards */}
@@ -103,7 +122,7 @@ export default async function StudentPage() {
             Recent Applications
           </h2>
           <Link
-            href="/dashboard/student/my-applications"
+            href="/dashboard/student/applications"
             className="inline-flex items-center gap-1 text-xs font-semibold text-blue-600 transition-colors hover:text-blue-700 dark:text-blue-400"
           >
             <span>View All</span>
