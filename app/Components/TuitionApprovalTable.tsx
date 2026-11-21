@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { Clock, CheckCircle2, XCircle } from "lucide-react";
 import toast from "react-hot-toast";
 import { AdminTuitionItem } from "../dashboard/admin/approvals/page";
+import { protectedMutation } from "@/lib/actions/server";
 
 
 interface TuitionApprovalTableProps {
@@ -32,13 +33,13 @@ export default function TuitionApprovalTable({
     setUpdatingId(tuitionId);
 
     try {
-      const res = await fetch(`${baseBackendUrl}/tuitions/${tuitionId}/status`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status: newStatus }),
-      });
+      const result = await protectedMutation(
+        `${baseBackendUrl}/tuitions/${tuitionId}/status`,
+        "PATCH",
+        { status: newStatus }
+      );
 
-      if (!res.ok) {
+      if (!result?.modifiedCount) {
         setTuitions(previousTuitions);
         toast.error("Failed to update tuition status");
         return;
@@ -47,9 +48,11 @@ export default function TuitionApprovalTable({
       toast.success(
         newStatus === "approved" ? "Tuition approved!" : "Tuition rejected"
       );
-    } catch {
+    } catch (err) {
       setTuitions(previousTuitions);
-      toast.error("Something went wrong");
+      toast.error(
+        err instanceof Error ? err.message : "Something went wrong"
+      );
     } finally {
       setUpdatingId(null);
     }
