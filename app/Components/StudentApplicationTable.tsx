@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Clock, CheckCircle2, XCircle, Trash2, Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
 import { TuitionApplicationType } from "@/lib/types/type";
+import { protectedMutation } from "@/lib/actions/server";
 
 
 interface MyApplicationsTableProps {
@@ -25,19 +26,26 @@ export default function MyApplicationsTable({
 
     setCancelingId(applicationId);
     try {
-      const res = await fetch(`${baseBackendUrl}/applications/${applicationId}`, {
-        method: "DELETE",
-      });
+      const res = await protectedMutation(
+        `${baseBackendUrl}/applications/${applicationId}`,
+        "DELETE"
+      );
 
-      if (!res.ok) {
+      if (!res?.deletedCount) {
         toast.error("Failed to cancel application");
         return;
       }
 
-      setApplications((prev) => prev.filter((item) => item._id !== applicationId));
+      setApplications((prev) =>
+        prev.filter((item) => item._id !== applicationId)
+      );
       toast.success("Application cancelled");
-    } catch {
-      toast.error("Something went wrong. Please try again.");
+    } catch (err) {
+      toast.error(
+        err instanceof Error
+          ? err.message
+          : "Something went wrong. Please try again."
+      );
     } finally {
       setCancelingId(null);
     }
