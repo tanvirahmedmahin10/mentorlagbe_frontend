@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import { ImagePlus, Loader2, CheckCircle2 } from "lucide-react";
 import toast from "react-hot-toast";
 import { FetchPostData } from "@/lib/postApiBackend/postData";
+import { FetchTeacherDataCount } from "@/lib/getApiBackend/getData";
+import { getUserPremiumById } from "@/lib/actions/user";
 import { authClient } from "@/lib/auth-client";
 
 type TeachingMode = "Online" | "Offline" | "Hybrid";
@@ -18,13 +20,15 @@ interface ImgBBResponse {
 
 export default function PostTuitionPage() {
   const router = useRouter();
-  const { data: session, isPending } = authClient.useSession();
-    const user = session?.user;
+  const { data: session } = authClient.useSession();
+  const user = session?.user;
+
   const [teachingMode, setTeachingMode] = useState<TeachingMode>("Online");
   const [bannerFile, setBannerFile] = useState<File | null>(null);
   const [bannerUrl, setBannerUrl] = useState<string>("");
   const [uploadingImg, setUploadingImg] = useState(false);
   const [loading, setLoading] = useState(false);
+
   const handleBannerUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0] ?? null;
     setBannerFile(selectedFile);
@@ -67,27 +71,42 @@ export default function PostTuitionPage() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setLoading(true);
-
     const form = e.currentTarget;
     const formData = new FormData(form);
 
-    const tuitionData = {
-      title: String(formData.get("title") ?? "").trim(),
-      subject: String(formData.get("subject") ?? ""),
-      classLevel: String(formData.get("classLevel") ?? ""),
-      teachingMode,
-      monthlyFee: Number(formData.get("monthlyFee") ?? 0),
-      daysPerWeek: Number(formData.get("daysPerWeek") ?? 3),
-      location: String(formData.get("location") ?? "").trim(),
-      bannerImage: bannerUrl,
-      description: String(formData.get("description") ?? "").trim(),
-      teacher_name:user?.name,
-      teacher_email:user?.email,
-      teacher_id:user?.id,
-    };
- console.log(tuitionData);
+    if (!user?.id) {
+      toast.error("Please sign in first");
+      return;
+    }
+
+    setLoading(true);
     try {
+      const [premiumResult, countResult] = await Promise.all([
+        getUserPremiumById(user.id),
+        FetchTeacherDataCount(user.id),
+      ]);
+
+      if (!premiumResult?.premium && countResult?.count >= 2) {
+        toast.error("Free plan limit reached (2 posts). Upgrade to Tutor Pro!");
+        router.push("/payments");
+        return;
+      }
+
+      const tuitionData = {
+        title: String(formData.get("title") ?? "").trim(),
+        subject: String(formData.get("subject") ?? ""),
+        classLevel: String(formData.get("classLevel") ?? ""),
+        teachingMode,
+        monthlyFee: Number(formData.get("monthlyFee") ?? 0),
+        daysPerWeek: Number(formData.get("daysPerWeek") ?? 3),
+        location: String(formData.get("location") ?? "").trim(),
+        bannerImage: bannerUrl,
+        description: String(formData.get("description") ?? "").trim(),
+        teacher_name: user.name,
+        teacher_email: user.email,
+        teacher_id: user.id,
+      };
+
       const res = await FetchPostData(tuitionData, "tuitions");
       if (!res.ok) {
         const errData = await res.json().catch(() => null);
@@ -96,12 +115,11 @@ export default function PostTuitionPage() {
       }
 
       toast.success("Tuition batch submitted for Admin review!");
-      
+
       form.reset();
       setBannerFile(null);
       setBannerUrl("");
       router.push("/dashboard/tutor/my-tuitions");
-      
     } catch {
       toast.error("Something went wrong. Please try again.");
     } finally {
@@ -317,7 +335,7 @@ export default function PostTuitionPage() {
               htmlFor="description"
               className="mb-1.5 block text-xs font-semibold text-slate-700 dark:text-slate-300"
             >
-              Curriculum & Batch Description <span className="text-red-500">*</span>
+              Curriculum &amp; Batch Description <span className="text-red-500">*</span>
             </label>
             <textarea
               id="description"

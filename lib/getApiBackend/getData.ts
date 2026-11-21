@@ -42,3 +42,17 @@ export const FetchStudentDataCount = async (studentId?: string, path: string = "
   if (!res.ok) return [];
   return res.json();
 };
+export const FetchTeacherDataCount = async (
+  teacherId?: string,
+  path: string = "tuitions"
+) => {
+  if (!teacherId) return { count: 0 };
+
+  const res = await fetch(
+    `${baseBackendUrl}/${path}/count?teacher_id=${encodeURIComponent(teacherId)}`,
+    { cache: "no-store" }
+  );
+
+  if (!res.ok) return { count: 0 };
+  return res.json();
+};

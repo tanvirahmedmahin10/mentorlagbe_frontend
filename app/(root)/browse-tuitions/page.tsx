@@ -20,7 +20,6 @@ const BrowsingPage = async ({ searchParams }: BrowsingPageProps) => {
   const data: TuitionPostPayload[] = initialData.filter(
   (post) => post.status === "approved"
 );
-   console.log(data);
   return <BrowsingClient initialData={data} />;
 };
 

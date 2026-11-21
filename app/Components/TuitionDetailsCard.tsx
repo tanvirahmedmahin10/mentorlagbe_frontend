@@ -9,6 +9,7 @@ import { FetchPostApplyData } from "@/lib/postApiBackend/postData";
 import { TuitionApplicationPayload, TuitionPostPayload } from "@/lib/types/type";
 import { FetchStudentDataCount } from "@/lib/getApiBackend/getData";
 import { useRouter } from "next/navigation";
+import { getUserPremiumById } from "@/lib/actions/user";
 
 interface ApplyTuitionCardProps {
   tuition: TuitionPostPayload;
@@ -66,8 +67,10 @@ export default function ApplyTuitionCard({ tuition }: ApplyTuitionCardProps) {
   const handleApplySubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!isStudent || !user) return;
+
+    const premiumnResult=await getUserPremiumById(user.id)
     const countResult=await FetchStudentDataCount(user.id)
-    if(countResult.count>=2){
+    if(!premiumnResult.premium &&countResult.count>=2){
       toast.error('Pay to Apply For More')
    router.push('/payments')
    return
