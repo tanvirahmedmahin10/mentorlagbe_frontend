@@ -1,4 +1,4 @@
-# MentorLagbe — Tuition & Mentorship Platform
+# 🎓 MentorLagbe — Tuition & Mentorship Platform
 
 ## Purpose
 MentorLagbe is a full-stack tuition and academic mentorship platform that connects students with tutors across Bangladesh. Students can browse and apply for tuition batches, tutors can create and manage tuition listings, and admins can manage users, approve tuition posts, and monitor subscription payments.
