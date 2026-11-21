@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { Clock, CheckCircle2, XCircle } from "lucide-react";
 import toast from "react-hot-toast";
 import { TuitionApplicationType } from "@/lib/types/type";
+import { protectedMutation } from "@/lib/actions/server";
 
 interface ManageApplicantsTableProps {
   initialApplicants: TuitionApplicationType[];
@@ -31,17 +32,14 @@ export default function ManageApplicantsTable({
     );
     setUpdatingId(applicationId);
 
-    try {
-      const res = await fetch(
+ try {
+      const result = await protectedMutation(
         `${baseBackendUrl}/applications/${applicationId}/status`,
-        {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ status: newStatus }),
-        }
+        "PATCH",
+        { status: newStatus }
       );
 
-      if (!res.ok) {
+      if (!result?.modifiedCount) {
         setApplicants(previous);
         toast.error("Failed to update application status");
         return;
@@ -50,9 +48,11 @@ export default function ManageApplicantsTable({
       toast.success(
         newStatus === "accepted" ? "Application accepted!" : "Application rejected"
       );
-    } catch {
+    } catch (err) {
       setApplicants(previous);
-      toast.error("Something went wrong");
+      toast.error(
+        err instanceof Error ? err.message : "Failed to update application status"
+      );
     } finally {
       setUpdatingId(null);
     }

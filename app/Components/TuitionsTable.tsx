@@ -15,6 +15,7 @@ import toast from "react-hot-toast";
 
 import EditButtons from "./ButtonForTutors/EditButtons";
 import { TuitionPostPayload } from "@/lib/types/type";
+import { protectedMutation } from "@/lib/actions/server";
 
 export type TutorTuitionItem = TuitionPostPayload & {
   status?: "pending" | "approved" | "rejected";
@@ -50,23 +51,25 @@ export default function MyTuitionsClient({
     );
     setBusyId(tuition._id);
 
-    try {
-      const res = await fetch(`${baseBackendUrl}/tuitions/${tuition._id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ availability: nextAvailability }),
-      });
+   try {
+      const result = await protectedMutation(
+        `${baseBackendUrl}/tuitions/${tuition._id}`,
+        "PATCH",
+        { availability: nextAvailability }
+      );
 
-      if (!res.ok) {
+      if (!result?.modifiedCount) {
         setTuitions(previous);
         toast.error("Failed to update availability");
         return;
       }
 
       toast.success(`Batch marked as ${nextAvailability}`);
-    } catch {
+    } catch (err) {
       setTuitions(previous);
-      toast.error("Something went wrong");
+      toast.error(
+        err instanceof Error ? err.message : "Something went wrong"
+      );
     } finally {
       setBusyId(null);
     }
@@ -79,20 +82,23 @@ export default function MyTuitionsClient({
     setBusyId(tuitionId);
 
     try {
-      const res = await fetch(`${baseBackendUrl}/tuitions/${tuitionId}`, {
-        method: "DELETE",
-      });
+      const result = await protectedMutation(
+        `${baseBackendUrl}/tuitions/${tuitionId}`,
+        "DELETE"
+      );
 
-      if (!res.ok) {
+      if (!result?.deletedCount) {
         setTuitions(previous);
         toast.error("Failed to delete tuition");
         return;
       }
 
       toast.success("Tuition deleted");
-    } catch {
+    } catch (err) {
       setTuitions(previous);
-      toast.error("Something went wrong");
+      toast.error(
+        err instanceof Error ? err.message : "Something went wrong"
+      );
     } finally {
       setBusyId(null);
     }
