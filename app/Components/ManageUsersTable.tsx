@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import toast from "react-hot-toast";
 import { PlatformUser } from "../dashboard/admin/users/page";
+import { protectedMutation } from "@/lib/actions/server";
 
 
 interface ManageUsersTableProps {
@@ -23,23 +24,25 @@ export default function ManageUsersTable({ initialUsers }: ManageUsersTableProps
     );
     setUpdatingId(userId);
 
-    try {
-      const res = await fetch(`${baseBackendUrl}/users/${userId}/role`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ role: newRole }),
-      });
+ try {
+      const result = await protectedMutation(
+        `${baseBackendUrl}/users/${userId}/role`,
+        "PATCH",
+        { role: newRole }
+      );
 
-      if (!res.ok) {
+      if (!result?.modifiedCount) {
         setUsers(previousUsers);
         toast.error("Failed to update user role");
         return;
       }
 
       toast.success(`Role updated to ${newRole}`);
-    } catch {
+    } catch (err) {
       setUsers(previousUsers);
-      toast.error("Something went wrong");
+      toast.error(
+        err instanceof Error ? err.message : "Something went wrong"
+      );
     } finally {
       setUpdatingId(null);
     }

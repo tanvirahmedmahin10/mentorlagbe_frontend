@@ -1,15 +1,12 @@
 import { baseBackendUrl } from "../postApiBackend/postData"
+import { protectedMutation } from "./server";
 
 
 
-export const checkoutVerify=async(sessionId:string)=>{
-
-    const res=await fetch(`${baseBackendUrl}/payments/checkout_verify`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({sessionId}),
-  });
-  return res.json()
-}
+export const checkoutVerify = async (sessionId: string) => {
+  return protectedMutation(
+    `${baseBackendUrl}/payments/checkout_verify`,
+    "POST",
+    { sessionId }
+  );
+};

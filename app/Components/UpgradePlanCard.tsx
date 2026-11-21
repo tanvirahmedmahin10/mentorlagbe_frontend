@@ -157,24 +157,6 @@ export default function UpgradePlanCard({ user }: UpgradePlanCardProps) {
             </button>
           </form>
 
-          {/* <button
-            type="button"
-            disabled={processing}
-            onClick={handleUpgrade}
-            className="mt-7 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 py-3 text-xs font-semibold text-white shadow-xs shadow-blue-600/20 transition-all hover:bg-blue-700 disabled:opacity-70"
-          >
-            {processing ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : (
-              <CreditCard className="h-4 w-4" />
-            )}
-            <span>
-              {processing
-                ? "Redirecting to Stripe..."
-                : `Pay $${price} & Upgrade Now`}
-            </span>
-          </button> */}
-
           <div className="mt-4 flex items-center justify-center gap-1.5 text-[11px] text-slate-400">
             <ShieldCheck className="h-3.5 w-3.5 text-emerald-500" />
             <span>Instant account activation upon confirmation</span>

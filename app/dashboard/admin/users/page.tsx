@@ -1,4 +1,5 @@
 import ManageUsersTable from "@/app/Components/ManageUsersTable";
+import { authFetch } from "@/lib/actions/server";
 
 
 export interface PlatformUser {
@@ -13,8 +14,8 @@ export interface PlatformUser {
 const baseBackendUrl = process.env.NEXT_PUBLIC_BETTER_AUTH_BACKEND_URL;
 
 export default async function ManageUsersPage() {
-  const res = await fetch(`${baseBackendUrl}/users`, { cache: "no-store" });
-  const users: PlatformUser[] = res.ok ? await res.json() : [];
+const res = await authFetch(`${baseBackendUrl}/users`);
+const users: PlatformUser[] = res.ok ? await res.json() : []
 
   return (
     <div className="mx-auto max-w-6xl">
