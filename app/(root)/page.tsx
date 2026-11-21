@@ -1,4 +1,5 @@
 import React from "react";
+import { connection } from "next/server";
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight, MapPin, BookOpen } from "lucide-react";
@@ -8,6 +9,7 @@ import HeroSearchForm from "../Components/HeroSearchForm";
 import HowItWorksAndSubjects from "../Components/HowItWorksAndSubjects";
 
 export default async function HomePage() {
+  await connection();
   const allTuitions: TuitionPostPayload[] = (await FetchGetData("tuitions")) ?? [];
 
 

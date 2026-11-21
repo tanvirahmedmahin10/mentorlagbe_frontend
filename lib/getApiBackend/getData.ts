@@ -2,9 +2,28 @@ import { authFetch } from "../actions/server";
 import { baseBackendUrl } from "../postApiBackend/postData";
 
 export const FetchGetData=async(path:string)=>{
+  try {
+    const res = await fetch(`${baseBackendUrl}/${path}`, {
+      cache: "no-store",
+    });
 
-const res=await fetch(`${baseBackendUrl}/${path}`)
-return res.json()
+    if (!res.ok) {
+      console.error(`Backend request failed for ${path}: ${res.status}`);
+      return [];
+    }
+
+    const contentType = res.headers.get("content-type") ?? "";
+    if (!contentType.includes("application/json")) {
+      console.error(`Backend returned a non-JSON response for ${path}`);
+      return [];
+    }
+
+    const data: unknown = await res.json();
+    return Array.isArray(data) ? data : [];
+  } catch (error) {
+    console.error(`Unable to fetch backend data for ${path}:`, error);
+    return [];
+  }
 
 }
 export const FetchTeacherData = async (teacherId?: string, path: string = "tuitions") => {
