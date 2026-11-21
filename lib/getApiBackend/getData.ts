@@ -1,3 +1,4 @@
+import { authFetch } from "../actions/server";
 import { baseBackendUrl } from "../postApiBackend/postData";
 
 export const FetchGetData=async(path:string)=>{
@@ -34,10 +35,8 @@ export const FetchGetDetails = async (id: string) => {
 };
 export const FetchStudentData = async (studentId?: string, path: string = "applications") => {
   if (!studentId) return [];
-
-  const res = await fetch(`${baseBackendUrl}/${path}?student_id=${encodeURIComponent(studentId)}`, {
-    cache: "no-store", 
-  });
+const api=`${baseBackendUrl}/${path}?student_id=${encodeURIComponent(studentId)}`
+  const res = await authFetch(api)
 
   if (!res.ok) return [];
   return res.json();

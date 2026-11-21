@@ -7,7 +7,7 @@ interface TutorLayoutProps {
 }
 
 const TutorLayout = async ({ children }: TutorLayoutProps) => {
-  await requireRole('recruiter');
+  await requireRole('tutor');
   return <>{children}</>;
 };
 

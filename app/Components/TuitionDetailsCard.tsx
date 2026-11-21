@@ -5,7 +5,7 @@ import Link from "next/link";
 import { CheckCircle2, Loader2, Send } from "lucide-react";
 import toast from "react-hot-toast";
 import { authClient } from "@/lib/auth-client";
-import { FetchPostApplyData } from "@/lib/postApiBackend/postData";
+import { authGet, authPost } from "@/lib/actions/server";
 import { TuitionApplicationPayload, TuitionPostPayload } from "@/lib/types/type";
 import { FetchStudentDataCount } from "@/lib/getApiBackend/getData";
 import { useRouter } from "next/navigation";
@@ -42,14 +42,11 @@ export default function ApplyTuitionCard({ tuition }: ApplyTuitionCardProps) {
     const checkExistingApplication = async () => {
       setCheckingStatus(true);
       try {
-        const res = await fetch(
-          `${baseBackendUrl}/applications?student_id=${encodeURIComponent(
+        const api=`${baseBackendUrl}/applications?student_id=${encodeURIComponent(
             user.id
           )}&tuition_id=${encodeURIComponent(tuition._id)}`
-        );
-        if (!res.ok) return;
+        const data: TuitionApplicationPayload[] | null = await authGet(api);
 
-        const data: TuitionApplicationPayload[] = await res.json();
         const existing = Array.isArray(data)
           ? data.find((app) => app.tuition_id === tuition._id)
           : undefined;
@@ -99,19 +96,20 @@ export default function ApplyTuitionCard({ tuition }: ApplyTuitionCardProps) {
 
     setSubmitting(true);
     try {
-      const res = await FetchPostApplyData(applicationData, "applications");
-      if (!res.ok) {
-        const errData = await res.json().catch(() => null);
-        toast.error(errData?.message || "Failed to submit application");
+      const { ok, data } = await authPost(
+        `${baseBackendUrl}/applications`,
+        applicationData
+      );
+      if (!ok) {
+        toast.error(data?.message || "Failed to submit application");
         return;
       }
 
-      const result = await res.json().catch(() => null);
       toast.success("Application submitted successfully!");
 
       setExistingApplication({
         ...applicationData,
-        _id: result?.insertedId ?? "",
+        _id: data?.insertedId ?? "",
       });
       setPreferredSchedule("");
       setContactNumber("");
