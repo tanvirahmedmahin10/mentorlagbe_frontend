@@ -47,7 +47,7 @@ export async function POST() {
         role: role || "student",
       },
       success_url: `${origin}/payments/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${origin}/payments`,
+      cancel_url: `${origin}/payments/cancel`,
     });
 
     return NextResponse.redirect(checkoutSession.url as string, 303);

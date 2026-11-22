@@ -161,5 +161,5 @@ export default async function SuccessPage({ searchParams }: SuccessPageProps) {
     );
   }
 
-  return redirect("/payments?canceled=true");
+  return redirect("/payments/cancel");
 }

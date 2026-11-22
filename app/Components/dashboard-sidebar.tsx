@@ -44,21 +44,21 @@ const roleMenus: Record<UserRole, NavItem[]> = {
   student: [
     { name: "Overview", url: "/dashboard/student", icon: LayoutGrid },
     { name: "My Applications", url: "/dashboard/student/applications", icon: FileText },
-    { name: "Update Profile", url: "/myprofile", icon: UserCog },
+    { name: "Update Profile", url: "/dashboard/myprofile", icon: UserCog },
   ],
   tutor: [
     { name: "Overview", url: "/dashboard/tutor", icon: LayoutGrid },
     { name: "Post a Tuition", url: "/dashboard/tutor/post-tuition", icon: FilePlus2 },
     { name: "My Tuitions", url: "/dashboard/tutor/my-tuitions", icon: BookOpen },
     { name: "Manage Applicants", url: "/dashboard/tutor/applicants", icon: Users },
-    { name: "Update Profile", url: "/myprofile", icon: UserCog },
+    { name: "Update Profile", url: "/dashboard/myprofile", icon: UserCog },
   ],
   admin: [
     { name: "Overview", url: "/dashboard/admin", icon: LayoutGrid },
     { name: "Manage Users", url: "/dashboard/admin/users", icon: Users },
     { name: "Tuition Approvals", url: "/dashboard/admin/approvals", icon: CheckSquare },
     { name: "Transactions", url: "/dashboard/admin/transactions", icon: CreditCard },
-    { name: "Update Profile", url: "/myprofile", icon: UserCog },
+    { name: "Update Profile", url: "/dashboard/myprofile", icon: UserCog },
   ],
 };
 
