@@ -4,14 +4,27 @@ import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight, MapPin, BookOpen } from "lucide-react";
 import { FetchGetData } from "@/lib/getApiBackend/getData";
+import { getSession } from "@/lib/actions/server";
 import { TuitionPostPayload } from "@/lib/types/type";
 import HeroSearchForm from "../Components/HeroSearchForm";
 import HowItWorksAndSubjects from "../Components/HowItWorksAndSubjects";
+import HomePricing from "../Components/HomePricing";
+import HomeTestimonials from "../Components/HomeTestimonials";
 
 export default async function HomePage() {
   await connection();
-  const allTuitions: TuitionPostPayload[] = (await FetchGetData("tuitions")) ?? [];
-
+  const [tuitions, session] = await Promise.all([
+    FetchGetData("tuitions"),
+    getSession(),
+  ]);
+  const allTuitions: TuitionPostPayload[] = tuitions ?? [];
+  const user = session?.user as
+    | { id: string; plan?: string; premium?: boolean }
+    | undefined;
+  const userPlan =
+    user?.plan?.toLowerCase() === "pro" || user?.premium
+      ? "pro"
+      : (user?.plan?.toLowerCase() ?? "free");
 
   const approvedTuitions = allTuitions
     .filter(
@@ -227,9 +240,21 @@ export default async function HomePage() {
             </div>
           )}
         </div>
-        <HowItWorksAndSubjects tuitions={approvedTuitions} />
       </section>
-    
+
+      <HomePricing
+        isSignedIn={Boolean(session?.user)}
+        isPro={userPlan === "pro"}
+      />
+
+      <HowItWorksAndSubjects tuitions={approvedTuitions} />
+
+      <HomeTestimonials
+        approvedCount={approvedTuitions.length}
+        tutorCount={
+          new Set(approvedTuitions.map((tuition) => tuition.teacher_id)).size
+        }
+      />
     </div>
   );
 }

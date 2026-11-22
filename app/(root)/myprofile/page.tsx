@@ -11,10 +11,10 @@ import {
 } from "lucide-react";
 import toast from "react-hot-toast";
 import { authClient } from "@/lib/auth-client";
-import { protectedMutation } from "@/lib/actions/server";
+import { authGet, protectedMutation } from "@/lib/actions/server";
 
 const baseBackendUrl = process.env.NEXT_PUBLIC_BETTER_AUTH_BACKEND_URL;
-const imgbbApiKey = process.env.NEXT_PUBLIC_IMGBB_API_KEY;
+const imgbbApiKey = process.env.NEXT_PUBLIC_IMGBB_APP_KEY;
 
 interface UserProfile {
   _id: string;
@@ -61,14 +61,11 @@ export default function UpdateProfilePage() {
 
     const loadProfile = async () => {
       try {
-        const token = localStorage.getItem("bearer_token") || "";
-        const res = await fetch(`${baseBackendUrl}/users/me`, {
-          headers: token ? { Authorization: `Bearer ${token}` } : {},
-          cache: "no-store",
-        });
+        const data: UserProfile | null = await authGet(
+          `${baseBackendUrl}/users/me`
+        );
 
-        if (res.ok && !ignore) {
-          const data: UserProfile = await res.json();
+        if (data && !ignore) {
           setProfile(data);
           setName(data.name || "");
           setPhone(data.phone || "");

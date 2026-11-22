@@ -6,18 +6,25 @@ import { auth } from "@/lib/auth";
 export async function POST() {
   try {
     const headersList = await headers();
-    const origin = headersList.get("origin") || process.env.NEXT_PUBLIC_APP_URL;
+    const origin =
+      headersList.get("origin") ||
+      process.env.NEXT_PUBLIC_APP_URL ||
+      "http://localhost:3000";
 
     const session = await auth.api.getSession({
       headers: headersList,
     });
 
     const user = session?.user as
-      | { id: string; email?: string; role?: string }
+      | { id: string; email?: string; role?: string; plan?: string; premium?: boolean }
       | undefined;
 
     if (!user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    if (user.plan?.toLowerCase() === "pro" || user.premium) {
+      return NextResponse.redirect(`${origin}/payments`, 303);
     }
 
     const role = user.role?.toLowerCase();
@@ -42,7 +49,7 @@ export async function POST() {
       success_url: `${origin}/payments/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/payments`,
     });
-  
+
     return NextResponse.redirect(checkoutSession.url as string, 303);
   } catch (err) {
     const error = err instanceof Error ? err : new Error("Something went wrong");

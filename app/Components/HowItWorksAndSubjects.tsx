@@ -19,7 +19,7 @@ const WORKFLOW_STEPS = [
     step: "01.",
     title: "Register Your Role",
     description:
-      "Create a free Student or Tutor account with instant JWT session protection and customizable profile credentials.",
+      "Create a free Student or Tutor account with secure session protection and customizable profile credentials.",
   },
   {
     step: "02.",

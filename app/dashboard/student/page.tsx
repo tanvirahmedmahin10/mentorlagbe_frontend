@@ -49,7 +49,6 @@ export default async function StudentPage() {
 
   return (
     <div className="mx-auto max-w-6xl">
-      {/* Header Row */}
       <div className="mb-7 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-[26px] dark:text-white">
@@ -76,7 +75,6 @@ export default async function StudentPage() {
         )}
       </div>
 
-      {/* 4 Stats Cards */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <div className="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-2xs dark:border-slate-800 dark:bg-slate-900">
           <p className="text-xs font-medium text-slate-500 dark:text-slate-400">
@@ -115,7 +113,6 @@ export default async function StudentPage() {
         </div>
       </div>
 
-      {/* Recent Applications Card */}
       <div className="mt-6 overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-2xs dark:border-slate-800 dark:bg-slate-900">
         <div className="flex items-center justify-between border-b border-slate-200/80 px-6 py-4 dark:border-slate-800">
           <h2 className="text-sm font-bold text-slate-900 dark:text-white">

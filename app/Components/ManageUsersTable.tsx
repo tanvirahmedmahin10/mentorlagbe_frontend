@@ -81,7 +81,9 @@ export default function ManageUsersTable({ initialUsers }: ManageUsersTableProps
             ) : (
               users.map((user) => {
                 const currentRole = (user.role || "student") as "student" | "tutor" | "admin";
-                const planLabel = user.plan || "Free";
+                const isProPlan =
+                  user.plan?.toLowerCase() === "pro" || user.premium === true;
+                const planLabel = isProPlan ? "Pro" : "Free";
 
                 return (
                   <tr

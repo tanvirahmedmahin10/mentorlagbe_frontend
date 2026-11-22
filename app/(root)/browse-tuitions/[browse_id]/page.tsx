@@ -125,7 +125,6 @@ const DetailsPage = async ({ params }: IParams) => {
                 </p>
               </div>
 
-              {/* Tutor Academic Bio / Teaching Experience */}
               {res.teacherBio && (
                 <div className="mt-7 rounded-xl border border-slate-200/80 bg-slate-50/80 p-5 dark:border-slate-800 dark:bg-slate-800/40">
                   <div className="flex items-center gap-3">

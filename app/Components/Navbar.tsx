@@ -98,7 +98,7 @@ export default function Navbar() {
             <Popover.Root open={popoverOpen} onOpenChange={setPopoverOpen}>
               <Popover.Trigger
                 aria-label="Open profile menu"
-                className="flex items-center justify-center rounded-full ring-2 ring-transparent transition hover:ring-blue-600/30 focus:outline-none"
+                className="flex items-center gap-2 rounded-full ring-2 ring-transparent transition hover:ring-blue-600/30 focus:outline-none"
               >
                 <Avatar.Root className="inline-flex h-9 w-9 select-none items-center justify-center overflow-hidden rounded-full bg-blue-600 text-sm font-semibold text-white">
                   {user.image && (
@@ -112,6 +112,9 @@ export default function Navbar() {
                     {user.name?.slice(0, 2).toUpperCase() || "U"}
                   </Avatar.Fallback>
                 </Avatar.Root>
+                <span className="hidden rounded-full border border-blue-200 bg-blue-50 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-blue-700 sm:inline-block dark:border-blue-900/60 dark:bg-blue-950/60 dark:text-blue-400">
+                  {user.role || "student"}
+                </span>
               </Popover.Trigger>
 
               <Popover.Portal>
@@ -125,6 +128,9 @@ export default function Navbar() {
                       <p className="truncate text-xs text-slate-500 dark:text-slate-400">
                         {user.email}
                       </p>
+                      <span className="mt-1.5 inline-flex items-center rounded-full border border-blue-200 bg-blue-50 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-blue-700 dark:border-blue-900/60 dark:bg-blue-950/60 dark:text-blue-400">
+                        {user.role || "student"}
+                      </span>
                     </div>
 
                     <div className="py-1">

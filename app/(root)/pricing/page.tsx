@@ -107,7 +107,7 @@ export default function PricingPage() {
           </div>
 
           <Link
-            href={userId ? "/dashboard/student" : "/login"}
+            href={userId ? "/dashboard/student" : "/signin"}
             className="mt-8 inline-flex w-full items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-semibold text-slate-800 transition-colors hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
           >
             Open Dashboard
@@ -154,7 +154,7 @@ export default function PricingPage() {
               </button>
             ) : !userId ? (
               <Link
-                href="/login"
+                href="/signin"
                 className="flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 px-4 py-2.5 text-xs font-semibold text-white transition-colors hover:bg-blue-700"
               >
                 <CreditCard className="h-4 w-4" />
@@ -175,7 +175,6 @@ export default function PricingPage() {
           </div>
         </div>
 
-        {/* 3. Tutor Free */}
         <div className="flex flex-col justify-between rounded-2xl border border-slate-200 bg-white p-6 shadow-2xs dark:border-slate-800 dark:bg-slate-900">
           <div>
             <h2 className="text-sm font-semibold text-slate-900 dark:text-white">
@@ -204,14 +203,13 @@ export default function PricingPage() {
           </div>
 
           <Link
-            href={userId ? "/dashboard/tutor" : "/login"}
+            href={userId ? "/dashboard/tutor" : "/signin"}
             className="mt-8 inline-flex w-full items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-semibold text-slate-800 transition-colors hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
           >
             Open Dashboard
           </Link>
         </div>
 
-        {/* 4. Tutor Pro */}
         <div className="flex flex-col justify-between rounded-2xl border border-slate-800 bg-slate-950 p-6 text-white shadow-sm">
           <div>
             <h2 className="flex items-center gap-1.5 text-sm font-semibold text-blue-400">
@@ -251,7 +249,7 @@ export default function PricingPage() {
               </button>
             ) : !userId ? (
               <Link
-                href="/login"
+                href="/signin"
                 className="flex w-full items-center justify-center gap-2 rounded-xl bg-white px-4 py-2.5 text-xs font-semibold text-slate-900 transition-colors hover:bg-slate-100"
               >
                 <CreditCard className="h-4 w-4" />

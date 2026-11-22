@@ -18,7 +18,17 @@ export const auth = betterAuth({
           role: {
               type: ["student","tutor"],
               input: true
-            } 
+            } ,
+          plan: {
+              type: ["free","pro"],
+              input: false,
+              defaultValue: "free"
+            },
+          premium: {
+              type: "boolean",
+              input: false,
+              defaultValue: false
+            }
         }
     }, 
 });

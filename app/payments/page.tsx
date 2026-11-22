@@ -17,12 +17,16 @@ export default async function PaymentsPage() {
         email?: string;
         role?: string;
         plan?: string;
+        premium?: boolean;
       }
     | undefined;
 
   if (!user) {
     redirect("/signin");
   }
+
+  const plan =
+    user.plan?.toLowerCase() === "pro" || user.premium ? "Pro" : "Free";
 
   return (
     <div className="min-h-screen bg-slate-50/60 px-4 py-14 sm:px-6 lg:px-8 dark:bg-slate-950">
@@ -49,7 +53,7 @@ export default async function PaymentsPage() {
             name: user.name ?? "",
             email: user.email ?? "",
             role: user.role ?? "student",
-            plan: user.plan ?? "Free",
+            plan,
           }}
         />
       </div>

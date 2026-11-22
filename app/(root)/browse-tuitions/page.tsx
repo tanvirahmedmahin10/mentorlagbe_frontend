@@ -18,7 +18,9 @@ const BrowsingPage = async ({ searchParams }: BrowsingPageProps) => {
   const endpoint = query ? `tuitions?${query}` : "tuitions";
   const initialData: TuitionPostPayload[] = (await FetchGetData(endpoint)) ?? [];
   const data: TuitionPostPayload[] = initialData.filter(
-  (post) => post.status === "approved"
+  (post) =>
+    post.status?.toLowerCase() === "approved" &&
+    post.availability !== "Closed"
 );
   return <BrowsingClient initialData={data} />;
 };

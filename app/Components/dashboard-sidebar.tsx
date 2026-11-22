@@ -194,7 +194,6 @@ export function DashboardSidebar() {
         </SidebarMenu>
       </SidebarContent>
 
-      {/* Bottom Footer Actions */}
       <SidebarFooter className="border-t border-slate-100 p-3.5 dark:border-slate-800">
         <SidebarMenu className="space-y-1">
           <SidebarMenuItem>

@@ -8,20 +8,17 @@ export const FetchGetData=async(path:string)=>{
     });
 
     if (!res.ok) {
-      console.error(`Backend request failed for ${path}: ${res.status}`);
       return [];
     }
 
     const contentType = res.headers.get("content-type") ?? "";
     if (!contentType.includes("application/json")) {
-      console.error(`Backend returned a non-JSON response for ${path}`);
       return [];
     }
 
     const data: unknown = await res.json();
     return Array.isArray(data) ? data : [];
-  } catch (error) {
-    console.error(`Unable to fetch backend data for ${path}:`, error);
+  } catch {
     return [];
   }
 
@@ -29,9 +26,11 @@ export const FetchGetData=async(path:string)=>{
 export const FetchTeacherData = async (teacherId?: string, path: string = "tuitions") => {
   if (!teacherId) return [];
 
-  const res = await fetch(`${baseBackendUrl}/${path}?teacher_id=${encodeURIComponent(teacherId)}`, {
-    cache: "no-store", 
-  });
+  const api = `${baseBackendUrl}/${path}?teacher_id=${encodeURIComponent(teacherId)}`;
+  const res =
+    path === "applications"
+      ? await authFetch(api)
+      : await fetch(api, { cache: "no-store" });
 
   if (!res.ok) return [];
   return res.json();

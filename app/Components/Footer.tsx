@@ -7,7 +7,6 @@ export default function Footer() {
     <footer className="mt-auto border-t border-slate-100 bg-white dark:border-slate-800/80 dark:bg-slate-950">
       <div className="mx-auto max-w-7xl px-4 pb-10 pt-14 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-12 lg:gap-8">
-          {/* Brand Column */}
           <div className="lg:col-span-4">
             <Link href="/" className="inline-flex items-center gap-2.5">
               <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-600 text-white shadow-xs shadow-blue-600/20">
@@ -23,7 +22,6 @@ export default function Footer() {
               mentorship across Bangladesh and online worldwide.
             </p>
 
-            {/* Social Icons */}
             <div className="mt-5 flex items-center gap-2.5">
               <a
                 href="https://x.com"
@@ -59,7 +57,6 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Platform Column */}
           <div className="lg:col-span-2">
             <h3 className="text-xs font-bold text-slate-900 dark:text-white">
               Platform
@@ -100,7 +97,6 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Popular Subjects Column */}
           <div className="lg:col-span-3">
             <h3 className="text-xs font-bold text-slate-900 dark:text-white">
               Popular Subjects
@@ -141,7 +137,6 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Contact Column */}
           <div className="lg:col-span-3">
             <h3 className="text-xs font-bold text-slate-900 dark:text-white">
               Contact
@@ -168,7 +163,6 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Bottom Divider & Copyright */}
         <div className="mt-12 border-t border-slate-100 pt-6 text-center text-xs text-slate-400 sm:flex sm:items-center sm:justify-between sm:text-left dark:border-slate-800/80 dark:text-slate-500">
           <p>© {new Date().getFullYear()} MentorLagbe. All rights reserved.</p>
           <p className="mt-1 sm:mt-0">Built for students &amp; verified educators.</p>

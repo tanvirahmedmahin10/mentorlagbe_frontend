@@ -186,7 +186,6 @@ export default function SignUpPage() {
             </div>
           </div>
 
-          {/* Full Name */}
           <div>
             <label
               htmlFor="fullName"

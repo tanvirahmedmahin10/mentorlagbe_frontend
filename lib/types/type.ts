@@ -17,6 +17,7 @@ export interface TuitionPostPayload {
   teacher_email: string,
   teacher_id:string,
   status:string,
+  availability?: "Active" | "Closed";
   teacherBio?: string;
   teacherImage?: string;
 }

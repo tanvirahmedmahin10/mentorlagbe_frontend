@@ -8,6 +8,7 @@ export interface PlatformUser {
   email: string;
   role?: "student" | "tutor" | "admin";
   plan?: string;
+  premium?: boolean;
   createdAt?: string;
 }
 

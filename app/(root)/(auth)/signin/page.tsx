@@ -47,7 +47,6 @@ export default function SignInPage() {
   return (
     <div className="flex min-h-[calc(100vh-5rem)] items-center justify-center bg-slate-50/70 px-4 py-12 transition-colors dark:bg-slate-950">
       <div className="w-full max-w-[440px] rounded-2xl border border-slate-200/80 bg-white p-7 shadow-sm sm:p-9 dark:border-slate-800 dark:bg-slate-900">
-        {/* Header */}
         <div className="mb-6">
           <h1 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-[26px] dark:text-white">
             Welcome Back

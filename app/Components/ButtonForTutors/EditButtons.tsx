@@ -8,6 +8,7 @@ import { TutorTuitionItem } from "../TuitionsTable";
 import {
   baseBackendUrl,
 } from "@/lib/postApiBackend/postData";
+import { protectedMutation } from "@/lib/actions/server";
 import { TeachingMode, TuitionPostPayloadUpdate } from "@/lib/types/type";
 
 interface EditButtonsProps {
@@ -62,17 +63,14 @@ export default function EditButtons({ tuition, onUpdated }: EditButtonsProps) {
     };
 
     try {
-      const res = await fetch(`${baseBackendUrl}/tuitions/${tuition._id}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(updatedPayload),
-      });
+      const result = await protectedMutation(
+        `${baseBackendUrl}/tuitions/${tuition._id}`,
+        "PATCH",
+        updatedPayload
+      );
 
-      if (!res.ok) {
-        const errData = await res.json().catch(() => null);
-        toast.error(errData?.message || "Failed to update tuition");
+      if (!result?.modifiedCount) {
+        toast.error(result?.message || "Failed to update tuition");
         return;
       }
 
@@ -269,7 +267,6 @@ export default function EditButtons({ tuition, onUpdated }: EditButtonsProps) {
                 />
               </div>
 
-              {/* Footer Actions */}
               <div className="flex items-center justify-end gap-2.5 border-t border-slate-100 pt-4 dark:border-slate-800">
                 <button
                   type="button"
