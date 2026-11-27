@@ -1,14 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import { BookOpen, Moon, Sun, Menu, X, User, LogOut } from "lucide-react";
+import { useTheme } from "next-themes";
 import { Popover } from "@base-ui/react/popover";
 import { Avatar } from "@base-ui/react/avatar";
 import { authClient } from "@/lib/auth-client";
 import toast from "react-hot-toast";
 
+const emptySubscribe = () => () => {};
 
 export default function Navbar() {
   
@@ -16,9 +18,19 @@ export default function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
 
-  const [isDark, setIsDark] = useState(false);
+  const { resolvedTheme, setTheme } = useTheme();
+  const hydrated = useSyncExternalStore(
+    emptySubscribe,
+    () => true,
+    () => false
+  );
+  const isDark = hydrated && resolvedTheme === "dark";
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [popoverOpen, setPopoverOpen] = useState(false);
+
+  const toggleTheme = () => {
+    setTheme(isDark ? "light" : "dark");
+  };
 
   const { data: session, isPending } = authClient.useSession();
   const user = session?.user;
@@ -91,14 +103,23 @@ export default function Navbar() {
 
        
         <div className="flex items-center gap-3">
-        
+          <button
+            type="button"
+            onClick={toggleTheme}
+            aria-label="Toggle dark mode"
+            title="Toggle dark mode"
+            className="rounded-lg p-2 text-slate-600 transition-colors hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800 cursor-pointer"
+          >
+            {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+          </button>
+
           {isPending ? (
             <div className="h-9 w-9 animate-pulse rounded-full bg-slate-200 dark:bg-slate-800" />
           ) : user ? (
             <Popover.Root open={popoverOpen} onOpenChange={setPopoverOpen}>
               <Popover.Trigger
                 aria-label="Open profile menu"
-                className="flex items-center gap-2 rounded-full ring-2 ring-transparent transition hover:ring-blue-600/30 focus:outline-none"
+                className="flex items-center gap-2 rounded-full ring-2 ring-transparent transition hover:ring-blue-600/30 focus:outline-none cursor-pointer"
               >
                 <Avatar.Root className="inline-flex h-9 w-9 select-none items-center justify-center overflow-hidden rounded-full bg-blue-600 text-sm font-semibold text-white">
                   {user.image && (
@@ -176,13 +197,6 @@ export default function Navbar() {
 
 
           <div className="flex items-center gap-2 md:hidden">
-            <button
-              onClick={() => setIsDark(!isDark)}
-              aria-label="Toggle Dark Mode"
-              className="rounded-lg p-2 text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800"
-            >
-              {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
-            </button>
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               aria-label="Toggle Menu"

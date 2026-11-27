@@ -36,7 +36,7 @@ export default function HeroSearchForm() {
 
       <button
         type="submit"
-        className="inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 py-2.5 text-xs font-semibold text-white shadow-xs shadow-blue-600/20 transition-colors hover:bg-blue-700"
+        className="inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 py-2.5 text-xs font-semibold text-white shadow-xs shadow-blue-600/20 transition-colors hover:bg-blue-700 cursor-pointer"
       >
         <span>Browse Tuitions</span>
         <ArrowRight className="h-3.5 w-3.5" />
